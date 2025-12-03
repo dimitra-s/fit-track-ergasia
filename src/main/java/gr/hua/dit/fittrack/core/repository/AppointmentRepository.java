@@ -1,4 +1,4 @@
-package gr.hua.dit.fittrack.core.model.repository;
+package gr.hua.dit.fittrack.core.repository;
 
 import gr.hua.dit.fittrack.core.model.entity.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;

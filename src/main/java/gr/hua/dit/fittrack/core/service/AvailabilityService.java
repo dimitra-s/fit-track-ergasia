@@ -1,0 +1,4 @@
+package gr.hua.dit.fittrack.core.service;
+
+public class AvailabilityService {
+}
