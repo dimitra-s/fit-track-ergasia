@@ -10,8 +10,8 @@ public class TrainerNotes {
     @Column(name = "id", nullable = false)
     private Long id;
 
-   // @ManyToOne
-    private Long appointmentId;//temporary for Apointment apointment
+    @ManyToOne
+    private Appointment appointment;
 
     @ManyToOne
     private Trainer trainer;
