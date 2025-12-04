@@ -1,6 +1,6 @@
 package gr.hua.dit.fittrack.core.repository;
 
-import gr.hua.dit.fittrack.core.model.ProgressRecord;
+import gr.hua.dit.fittrack.core.model.entity.ProgressRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
