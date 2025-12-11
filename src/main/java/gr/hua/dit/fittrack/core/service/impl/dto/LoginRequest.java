@@ -1,4 +1,4 @@
-package gr.hua.dit.fittrack.core.service.model;
+package gr.hua.dit.fittrack.core.service.impl.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

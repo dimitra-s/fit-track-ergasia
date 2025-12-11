@@ -1,9 +1,9 @@
 package gr.hua.dit.fittrack.core.service;
 
-import gr.hua.dit.fittrack.core.service.model.RegisterUserRequest;
-import gr.hua.dit.fittrack.core.service.model.RegisterUserResult;
-import gr.hua.dit.fittrack.core.service.model.LoginRequest;
-import gr.hua.dit.fittrack.core.service.model.LoginResult;
+import gr.hua.dit.fittrack.core.service.impl.dto.RegisterUserRequest;
+import gr.hua.dit.fittrack.core.service.impl.dto.RegisterUserResult;
+import gr.hua.dit.fittrack.core.service.impl.dto.LoginRequest;
+import gr.hua.dit.fittrack.core.service.impl.dto.LoginResult;
 
 public interface AuthService {
 

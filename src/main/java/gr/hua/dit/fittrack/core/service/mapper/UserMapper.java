@@ -1,7 +1,7 @@
 package gr.hua.dit.fittrack.core.service.mapper;
 
 import gr.hua.dit.fittrack.core.model.entity.User;
-import gr.hua.dit.fittrack.core.service.model.UserView;
+import gr.hua.dit.fittrack.core.service.impl.dto.UserView;
 import org.springframework.stereotype.Component;
 
 @Component

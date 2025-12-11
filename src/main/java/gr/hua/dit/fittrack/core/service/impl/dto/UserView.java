@@ -1,4 +1,4 @@
-package gr.hua.dit.fittrack.core.service.model;
+package gr.hua.dit.fittrack.core.service.impl.dto;
 
 import gr.hua.dit.fittrack.core.model.entity.Role;
 

@@ -3,8 +3,8 @@ package gr.hua.dit.fittrack.core.controller;
 import gr.hua.dit.fittrack.core.service.AuthService;
 import gr.hua.dit.fittrack.core.service.impl.dto.LoginDto;
 import gr.hua.dit.fittrack.core.service.impl.dto.RegisterDto;
-import gr.hua.dit.fittrack.core.service.model.LoginRequest;
-import gr.hua.dit.fittrack.core.service.model.RegisterUserRequest;
+import gr.hua.dit.fittrack.core.service.impl.dto.LoginRequest;
+import gr.hua.dit.fittrack.core.service.impl.dto.RegisterUserRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

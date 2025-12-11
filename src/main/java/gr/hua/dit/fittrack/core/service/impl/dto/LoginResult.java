@@ -1,4 +1,4 @@
-package gr.hua.dit.fittrack.core.service.model;
+package gr.hua.dit.fittrack.core.service.impl.dto;
 
 public record LoginResult(
         boolean success,
