@@ -5,7 +5,11 @@ import gr.hua.dit.fittrack.core.model.entity.User;
 import gr.hua.dit.fittrack.core.repository.UserRepository;
 import gr.hua.dit.fittrack.core.security.JwtService;
 import gr.hua.dit.fittrack.core.service.AuthService;
-import gr.hua.dit.fittrack.core.service.impl.dto.*;
+import gr.hua.dit.fittrack.core.service.impl.dto.LoginRequest;
+import gr.hua.dit.fittrack.core.service.impl.dto.LoginResult;
+import gr.hua.dit.fittrack.core.service.impl.dto.RegisterUserRequest;
+import gr.hua.dit.fittrack.core.service.impl.dto.RegisterUserResult;
+import gr.hua.dit.fittrack.core.service.impl.dto.UserView;
 import gr.hua.dit.fittrack.core.service.mapper.UserMapper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
@@ -86,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(hashedPassword);
         user.setUserFirstName(request.firstName().strip());
         user.setUserLastName(request.lastName().strip());
-        user.setRole(Role.USER);
+        user.setRole(Role.USER); // default ρόλος για register
 
         // Προαιρετικό: validation στο entity (όπως ο καθηγητής)
         Set<ConstraintViolation<User>> userViolations = validator.validate(user);
@@ -102,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // ------------------------
-    // 2. LOGIN
+    // 2. LOGIN (JWT)
     // ------------------------
     @Override
     public LoginResult login(LoginRequest request) {
@@ -137,12 +141,21 @@ public class AuthServiceImpl implements AuthService {
             return LoginResult.fail("Invalid email or password");
         }
 
-        // Δημιουργία JWT token
+        // Δημιουργία JWT token (όπως στο OfficeHours, με subject + roles)
         String token = jwtService.issue(
-                user.getEmailAddress(),
-                user.getRole().name()
+                user.getEmailAddress(),   // subject
+                user.getRole().name()     // ένας ρόλος: USER / TRAINER
         );
 
-        return LoginResult.success(token);
+        // π.χ. 60 λεπτά = 3600 δευτερόλεπτα
+        long expiresIn = 60L * 60L;
+
+        // Επιτυχές αποτέλεσμα με token, διάρκεια, ρόλο και id χρήστη
+        return LoginResult.success(
+                token,
+                expiresIn,
+                user.getRole().name(),
+                user.getId()
+        );
     }
 }
