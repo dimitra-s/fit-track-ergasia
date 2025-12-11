@@ -3,10 +3,10 @@ package gr.hua.dit.fittrack.core.service.impl;
 import gr.hua.dit.fittrack.core.model.entity.Role;
 import gr.hua.dit.fittrack.core.model.entity.User;
 import gr.hua.dit.fittrack.core.repository.UserRepository;
+import gr.hua.dit.fittrack.core.security.JwtService;
 import gr.hua.dit.fittrack.core.service.AuthService;
 import gr.hua.dit.fittrack.core.service.mapper.UserMapper;
 import gr.hua.dit.fittrack.core.service.model.*;
-import gr.hua.dit.fittrack.core.security.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -26,24 +26,24 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtService jwtService;
 
     public AuthServiceImpl(Validator validator,
                            PasswordEncoder passwordEncoder,
                            UserRepository userRepository,
                            UserMapper userMapper,
-                           JwtTokenProvider jwtTokenProvider) {
+                           JwtService jwtService) {
         if (validator == null) throw new NullPointerException();
         if (passwordEncoder == null) throw new NullPointerException();
         if (userRepository == null) throw new NullPointerException();
         if (userMapper == null) throw new NullPointerException();
-        if (jwtTokenProvider == null) throw new NullPointerException();
+        if (jwtService == null) throw new NullPointerException();
 
         this.validator = validator;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtService = jwtService;
     }
 
     // ------------------------
@@ -138,7 +138,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Δημιουργία JWT token
-        String token = jwtTokenProvider.generateToken(
+        String token = jwtService.generateToken(
                 user.getEmailAddress(),
                 user.getRole().name()
         );
