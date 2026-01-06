@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>FitTrack - Booking Service</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="card-title mb-0 text-center text-uppercase">Προγραμματισμός Νέας Προπόνησης</h5>
+                </div>
+                <div class="card-body p-4">
+
+                    <div th:if="${errorMessage}" class="alert alert-warning border-0 shadow-sm" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <form th:action="@{/appointments/create}" th:object="${appointmentRequest}" method="post">
+
+                        <div class="mb-4">
+                            <label for="trainerSelect" class="form-label fw-bold">Επιλέξτε Personal Trainer</label>
+                            <select id="trainerSelect" th:field="*{trainerId}" class="form-select form-select-lg" required>
+                                <option value="" selected disabled>Επιλέξτε από τη λίστα...</option>
+                                <option th:each="trainer : ${trainers}"
+                                        th:value="${trainer.id}"
+                                        th:text="${'Coach ' + trainer.firstName + ' ' + trainer.lastName}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="dateTimeInput" class="form-label fw-bold">Επιθυμητή Ημερομηνία & Ώρα</label>
+                            <input type="datetime-local" id="dateTimeInput" th:field="*{dateTime}"
+                                   class="form-control form-control-lg" required>
+                            <div class="form-text text-danger" th:if="${#fields.hasErrors('dateTime')}" th:errors="*{dateTime}"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="workoutType" class="form-label fw-bold">Είδος Προπόνησης</label>
+                            <input type="text" id="workoutType" th:field="*{type}"
+                                   class="form-control form-control-lg"
+                                   placeholder="π.χ. Ατομικό Πρόγραμμα, Βάρη, HIIT" required>
+                            <div class="form-text text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">Οριστικοποίηση Ραντεβού</button>
+                            <a th:href="@{/appointments/my-appointments}" class="btn btn-outline-secondary">Επιστροφή στο Προφίλ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

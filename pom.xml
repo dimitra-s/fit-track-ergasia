@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>gr.hua.dit.fittrack</groupId>
-	<artifactId>fit-track</artifactId>
+	<artifactId>fit-track-backup</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Fit Track</name>
 	<description>Ergasia Katanemimena</description>
