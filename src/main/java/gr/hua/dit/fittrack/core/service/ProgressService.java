@@ -1,35 +1,66 @@
 package gr.hua.dit.fittrack.core.service;
 
 import gr.hua.dit.fittrack.core.model.entity.ProgressRecord;
+import gr.hua.dit.fittrack.core.model.entity.User;
 import gr.hua.dit.fittrack.core.repository.ProgressRepository;
+import gr.hua.dit.fittrack.core.repository.UserRepository;
+import gr.hua.dit.fittrack.core.service.impl.dto.AddProgressRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class ProgressService {
 
     private final ProgressRepository progressRepository;
+    private final UserRepository userRepository;
 
-    public ProgressService(final ProgressRepository progressRepository) {
-
-        //checking if the repository is null
+    public ProgressService(
+            final ProgressRepository progressRepository,
+            final UserRepository userRepository
+    ) {
         if (progressRepository == null) throw new NullPointerException();
+        if (userRepository == null) throw new NullPointerException();
+
         this.progressRepository = progressRepository;
+        this.userRepository = userRepository;
     }
 
-    public ProgressRecord addProgress(LocalDate date, Double weight, String notes){
-        ProgressRecord progressRecord = new ProgressRecord();
-       // progressRecord.setId(userid);
-        progressRecord.setUser(progressRecord.getUser());
-        progressRecord.setDate(progressRecord.getDate());
-        progressRecord.setNotes(progressRecord.getNotes());
-        progressRecord.setWeight(progressRecord.getWeight());
-        return progressRepository.save(progressRecord);
+    // ------------------------
+    // 1. addProgress(userId, dto)
+    // ------------------------
+    public ProgressRecord addProgress(Long userId, AddProgressRequest dto) {
+
+        if (userId == null) {
+            throw new IllegalArgumentException("userId is required");
+        }
+        if (dto == null) {
+            throw new IllegalArgumentException("progress data is required");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("User not found: " + userId)
+                );
+
+        ProgressRecord record = new ProgressRecord();
+        record.setUser(user);
+        record.setDate(dto.date());
+        record.setWeight(dto.weight());
+        record.setNotes(dto.notes());
+
+        return progressRepository.save(record);
     }
 
-    public Optional<ProgressRecord> listProgress(ProgressRecord progressRecord){
-        return progressRepository.findById(progressRecord.getId());
+    // ------------------------
+    // 2. getProgressForUser(userId)
+    // ------------------------
+    public List<ProgressRecord> getProgressForUser(Long userId) {
+
+        if (userId == null) {
+            throw new IllegalArgumentException("userId is required");
+        }
+
+        return progressRepository.findByUser_Id(userId);
     }
 }

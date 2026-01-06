@@ -10,8 +10,7 @@ public class TrainerAvailability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Trainer trainer;
+    private Long trainer; // προσωρινά
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -21,8 +20,8 @@ public class TrainerAvailability {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Trainer getTrainer() { return trainer; }
-    public void setTrainer(Trainer trainer) { this.trainer = trainer; }
+    public Long getTrainer() { return trainer; }
+    public void setTrainer(Long trainer) { this.trainer = trainer; }
 
     public LocalDateTime getStartTime() { return startTime; }
     public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
@@ -30,3 +29,4 @@ public class TrainerAvailability {
     public LocalDateTime getEndTime() { return endTime; }
     public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
 }
+

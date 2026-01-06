@@ -11,4 +11,5 @@ public interface AppointmentService {
         return this.createAppointment(createAppointmentRequest, true);
     }
 
+    void deleteAppointment(Long id);
 }

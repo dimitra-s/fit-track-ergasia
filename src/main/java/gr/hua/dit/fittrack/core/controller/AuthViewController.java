@@ -1,11 +1,7 @@
-package gr.hua.dit.fittrack.core.controller;
+package gr.hua.dit.fittrack.core.controller; // Προτείνω να μπει στο web package
 
 import gr.hua.dit.fittrack.core.service.AuthService;
-import gr.hua.dit.fittrack.core.service.impl.dto.LoginDto;
-import gr.hua.dit.fittrack.core.service.impl.dto.RegisterDto;
-import gr.hua.dit.fittrack.core.service.impl.dto.LoginRequest;
 import gr.hua.dit.fittrack.core.service.impl.dto.RegisterUserRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,32 +15,16 @@ public class AuthViewController {
         this.authService = authService;
     }
 
+    // Εμφάνιση Φόρμας Login
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
     }
 
-    @PostMapping("/login")
-    public String submitLoginForm(
-            @RequestParam String username,
-            @RequestParam String password,
-            Model model
-    ) {
-        try {
-            LoginDto dto = new LoginDto(username, password);
+    // ΣΗΜΑΝΤΙΚΟ: To POST /login ΔΕΝ το γράφουμε εμείς,
+    // το διαχειρίζεται το Spring Security αυτόματα!
 
-            LoginRequest request = new LoginRequest(dto.username(), dto.password());
-
-            authService.login(request);
-
-            return "redirect:/profile";
-
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "login";
-        }
-    }
-
+    // Εμφάνιση Φόρμας Εγγραφής
     @GetMapping("/register")
     public String showRegisterForm() {
         return "register";
@@ -52,29 +32,28 @@ public class AuthViewController {
 
     @PostMapping("/register")
     public String submitRegisterForm(
-            @RequestParam String username,
+            @RequestParam String firstName,
+            @RequestParam String lastName,
             @RequestParam String email,
             @RequestParam String password,
-            @RequestParam String role,
             Model model
     ) {
         try {
-
-            RegisterDto dto = new RegisterDto(username, email, password, role);
-
+            // Δημιουργία του Request DTO με βάση τα πεδία που ορίσαμε
             RegisterUserRequest req = new RegisterUserRequest(
-                    dto.username(),
-                    dto.email(),
-                    dto.password(),
-                    dto.role()
+                    email,
+                    password,
+                    firstName,
+                    lastName
             );
 
             authService.registerUser(req);
 
-            return "redirect:/login";
+            // Μετά την εγγραφή, στέλνουμε τον χρήστη στο login με μήνυμα επιτυχίας
+            return "redirect:/login?registered=true";
 
         } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("error", "Η εγγραφή απέτυχε: " + e.getMessage());
             return "register";
         }
     }
