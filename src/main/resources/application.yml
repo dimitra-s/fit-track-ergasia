@@ -18,7 +18,7 @@ spring:
 
 app:
   jwt:
-    secret: "c2VjcmV0c2VjcmV0c2VjcmV0c2VjcmV0MTIzNCE="  # base64 της λέξης "secretsecretsecret1234!"
+    secret: "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="
     issuer: "fittrack"
     audience: "fittrack-users"
     ttl-minutes: 1440

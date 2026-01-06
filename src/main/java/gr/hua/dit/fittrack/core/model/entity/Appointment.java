@@ -11,25 +11,22 @@ public class Appointment {
     private Long id;
 
     @ManyToOne
-    private User userId;
+    private User user;
 
     @ManyToOne
-    private Trainer trainerId;
+    private Trainer trainer;
 
     private LocalDateTime dateTime;
-
-    private String type; // π.χ. "Cardio", "Strength"
-
-    // getters & setters
+    private String type;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public User getUserId() { return userId; }
-    public void setUserId(User userId) { this.userId = userId; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public Trainer getTrainerId() { return trainerId; }
-    public void setTrainerId(Trainer trainerId) { this.trainerId = trainerId; }
+    public Trainer getTrainer() { return trainer; }
+    public void setTrainer(Trainer trainer) { this.trainer = trainer; }
 
     public LocalDateTime getDateTime() { return dateTime; }
     public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
