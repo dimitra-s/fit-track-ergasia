@@ -22,3 +22,6 @@ app:
     issuer: "fittrack"
     audience: "fittrack-users"
     ttl-minutes: 1440
+
+server:
+  port: 8081

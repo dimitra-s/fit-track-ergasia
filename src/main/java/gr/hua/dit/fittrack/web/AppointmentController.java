@@ -59,7 +59,7 @@ public class AppointmentController {
         return "redirect:/appointments/my-appointments?success";
     }
 
-    @GetMapping("/my-appointments")
+    @GetMapping("/api/appointments/my-appointments")
     public String listAppointments(Model model) {
         // ραντεβού χρήστη
         return "appointments/appointment-list";

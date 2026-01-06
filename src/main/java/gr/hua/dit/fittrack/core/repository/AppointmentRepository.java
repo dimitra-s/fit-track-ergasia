@@ -14,7 +14,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByUser_Id(Long userId);
 
     // Για να βλέπει ο χρήστης τα ραντεβού του (μέσω Email/Username - πολύ χρήσιμο για το Security)
-    List<Appointment> findByUser_Email(String email);
+    List<Appointment> findByUser_EmailAddress(String email);
 
     // Για να βλέπει ο Trainer το πρόγραμμά του
     List<Appointment> findByTrainer_Id(Long trainerId);

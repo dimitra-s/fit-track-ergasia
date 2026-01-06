@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1d20;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .login-card {
+            background: #2a2d34;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .btn-accent {
+            background-color: #d4fc79;
+            color: #2a2d34;
+            font-weight: 700;
+            border: none;
+        }
+        .btn-accent:hover { background-color: #b9e65a; }
+        .form-control {
+            background-color: #3e424b;
+            border: 1px solid #4f545f;
+            color: white;
+        }
+        .form-control:focus {
+            background-color: #3e424b;
+            color: white;
+            border-color: #d4fc79;
+            box-shadow: none;
+        }
+        .navbar-brand { font-weight: 800; position: absolute; top: 20px; left: 20px; }
+    </style>
+</head>
+<body>
+
+<a class="navbar-brand text-white text-decoration-none fs-3" href="/">
+    <i class="bi bi-lightning-charge-fill text-warning"></i> FITTRACK
+</a>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card login-card">
+                <h2 class="text-center mb-4 fw-bold">Καλώς Ήρθες!</h2>
+
+                <form th:action="@{/login}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Email</label>
+                        <input type="email" name="username" class="form-control form-control-lg" placeholder="name@example.com" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted">Κωδικός Πρόσβασης</label>
+                        <input type="password" name="password" class="form-control form-control-lg" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-accent btn-lg w-100 mb-3">
+                        Είσοδος
+                    </button>
+
+                    <div th:if="${param.error}" class="alert alert-danger py-2" role="alert">
+                        <small><i class="bi bi-exclamation-triangle-fill me-2"></i>Λάθος email ή κωδικός.</small>
+                    </div>
+                    <div th:if="${param.logout}" class="alert alert-info py-2" role="alert">
+                        <small>Αποσυνδεθήκατε με επιτυχία.</small>
+                    </div>
+                </form>
+
+                <p class="text-center mt-3 mb-0">
+                    Δεν έχεις λογαριασμό; <a th:href="@{/register}" class="text-decoration-none" style="color: #d4fc79;">Γίνε μέλος</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
