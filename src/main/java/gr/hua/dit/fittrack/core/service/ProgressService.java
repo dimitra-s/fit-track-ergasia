@@ -46,6 +46,6 @@ public class ProgressService {
     }
 
     public List<ProgressRecord> getProgressForUser(Long userId) {
-        return progressRepository.findByUserId(userId);
+        return progressRepository.findByUser_Id(userId);
     }
 }

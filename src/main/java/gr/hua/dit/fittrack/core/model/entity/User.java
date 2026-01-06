@@ -2,6 +2,9 @@ package gr.hua.dit.fittrack.core.model.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -14,6 +17,10 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProgressRecord> progressRecords = new ArrayList<>();
+
 
     private String userFirstName;
     private String emailAddress;
