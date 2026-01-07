@@ -72,7 +72,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login") // POST /login
-                        .defaultSuccessUrl("/profile", true)
+                        .defaultSuccessUrl("/appointments/new", true)
                         .failureUrl("/login?error")
                         .permitAll()
                 )
