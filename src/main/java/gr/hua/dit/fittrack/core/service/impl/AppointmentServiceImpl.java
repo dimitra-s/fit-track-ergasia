@@ -45,7 +45,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         // 2) availability
         boolean hasAvailability =
                 trainerAvailabilityRepository
-                        .existsByTrainerAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+                        .existsByTrainer_IdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
                                 req.trainerId(),
                                 req.dateTime(),
                                 req.dateTime()

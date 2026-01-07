@@ -8,11 +8,12 @@ import java.util.List;
 
 public interface TrainerAvailabilityRepository extends JpaRepository<TrainerAvailability, Long> {
 
-    List<TrainerAvailability> findByTrainer(Long trainer);
 
-    boolean existsByTrainerAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-            Long trainer,
-            LocalDateTime time,
-            LocalDateTime time2
+    List<TrainerAvailability> findByTrainer_Id(Long trainerId);
+
+    boolean existsByTrainer_IdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+            Long trainerId,
+            LocalDateTime startTime,
+            LocalDateTime endTime
     );
 }
