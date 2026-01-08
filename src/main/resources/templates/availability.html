@@ -1,10 +1,41 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Η διαθεσιμότητα μου</title>
 </head>
 <body>
+<ul>
+    <li th:each="slot : ${slots}">
+        <span>
+            Από:
+            <b th:text="${slot.startTime}"></b>
+            έως
+            <b th:text="${slot.endTime}"></b>
+        </span>
+
+        <form
+                th:action="@{|/trainer/availability/${slot.id}/delete|}"
+                method="post"
+                style="display:inline"
+        >
+            <button type="submit">Διαγραφή</button>
+        </form>
+    </li>
+</ul>
+<h2>Προσθήκη νέου slot</h2>
+
+<form th:action="@{/trainer/availability/new}" method="post" th:object="${form}">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <label>Έναρξη</label>
+    <input type="datetime-local" th:field="*{startTime}" required>
+
+    <label>Λήξη</label>
+    <input type="datetime-local" th:field="*{endTime}" required>
+
+    <button type="submit">Προσθήκη</button>
+</form>
 
 </body>
 </html>

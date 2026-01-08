@@ -42,13 +42,9 @@ public class TrainerAvailabilityController {
         return "availability";
     }
 
-    @PreAuthorize("hasRole('TRAINER')")
     @GetMapping("/new")
     public String showCreateForm(final Model model) {
-        final AvailabilityForm form =
-                new AvailabilityForm(null, null);
-
-        model.addAttribute("form", form);
+        model.addAttribute("form", new AvailabilityForm(null, null));
         return "availability_new";
     }
 
@@ -68,8 +64,8 @@ public class TrainerAvailabilityController {
         final CreateAvailabilityResult result =
                 this.availabilityService.createSlot(
                         trainerId,
-                        form.startTime(),
-                        form.endTime()
+                        form.getStartTime(),
+                        form.getEndTime()
                 );
 
         if (!result.created()) {
@@ -77,7 +73,7 @@ public class TrainerAvailabilityController {
             return "availability_new";
         }
 
-        return "redirect:/availability";
+        return "redirect:/trainer/availability";
     }
 
     @PreAuthorize("hasRole('TRAINER')")
@@ -85,6 +81,6 @@ public class TrainerAvailabilityController {
     public String delete(@PathVariable final Long slotId) {
         final Long trainerId = this.currentUserProvider.requiredTrainerId();
         this.availabilityService.deleteSlot(trainerId, slotId);
-        return "redirect:/availability";
+        return "redirect:/trainer/availability";
     }
 }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notes for client</title>
+</head>
+<body>
+<h1>Notes για τον πελάτη <span th:text="${clientName}"></span></h1>
+<h2>Appointment: <span th:text="${appointmentDate}"></span></h2>
+
+<ul>
+    <li th:each="note : ${notes}">
+        <span th:text="${note.text}"></span>
+        <small>(<span th:text="${#dates.format(note.createdAt, 'yyyy-MM-dd HH:mm')}"></span>)</small>
+    </li>
+</ul>
+
+<h3>Προσθήκη νέου note</h3>
+<form th:action="@{|/trainer/appointments/${appointmentId}/notes|}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <textarea name="text" rows="3" cols="50" required></textarea><br/>
+    <button type="submit">Προσθήκη</button>
+</form>
+
+</body>
+</html>
