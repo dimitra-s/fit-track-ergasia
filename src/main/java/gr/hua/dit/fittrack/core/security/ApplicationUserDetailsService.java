@@ -9,27 +9,24 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ApplicationUserDetailsService implements UserDetailsService {
+
     private final UserRepository userRepository;
 
     public ApplicationUserDetailsService(UserRepository userRepository) {
-        if (userRepository == null) throw new NullPointerException();
         this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        if (email == null || email.isBlank()) throw new IllegalArgumentException();
+        // Ψάχνουμε στη βάση με βάση το emailAddress
+        User user = userRepository.findByEmailAddress(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        // Παίρνουμε τον χρήστη από τη βάση
-        User user = userRepository.findByEmailAddressIgnoreCase(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
-
-        // Δημιουργούμε το UserDetails αντικείμενο
-        return new ApplicationUserDetails(
-                user.getId(),
-                user.getEmailAddress(),
-                user.getPassword(),
-                user.getRole() // Role.USER ή Role.TRAINER
-        );
+        // Επιστρέφουμε το αντικείμενο UserDetails που καταλαβαίνει η Spring Security
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmailAddress()) // Το email παίζει το ρόλο του "username"
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build();
     }
 }

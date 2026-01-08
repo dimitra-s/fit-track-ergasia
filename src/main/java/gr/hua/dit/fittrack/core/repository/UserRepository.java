@@ -16,6 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Για login: φέρε τον χρήστη με αυτό το email
     Optional<User> findByEmailAddressIgnoreCase(String emailAddress);
+    Optional<User> findByEmailAddress(String emailAddress);
 
     // Αν θες να παίρνεις όλους τους trainers / users
     List<User> findByRole(Role role);
