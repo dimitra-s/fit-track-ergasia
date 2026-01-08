@@ -9,20 +9,24 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Αλλαγή σε IDENTITY για συμβατότητα
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String username; // Απαραίτητο για το login
+    private String username;
 
     private String password;
     private String userFirstName;
     private String userLastName;
     private String emailAddress;
 
-    // Το πεδίο που ζητάει η εκφώνηση για το προφίλ
+    // Πεδία για το Profile (Απαίτηση Εκφώνησης)
     private String fitnessGoal;
+
+    // Προσθήκη πεδίων για άμεση εμφάνιση στο Profile
+    private Double currentWeight;      // π.χ. 75.0
+    private Double runningTime;        // π.χ. 25.5 (λεπτά)
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -44,75 +48,36 @@ public class User {
     }
 
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getUserFirstName() { return userFirstName; }
+    public void setUserFirstName(String userFirstName) { this.userFirstName = userFirstName; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getUserLastName() { return userLastName; }
+    public void setUserLastName(String userLastName) { this.userLastName = userLastName; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public String getEmailAddress() { return emailAddress; }
+    public void setEmailAddress(String emailAddress) { this.emailAddress = emailAddress; }
 
-    public String getUserFirstName() {
-        return userFirstName;
-    }
+    public String getFitnessGoal() { return fitnessGoal; }
+    public void setFitnessGoal(String fitnessGoal) { this.fitnessGoal = fitnessGoal; }
 
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
-    }
+    public Double getCurrentWeight() { return currentWeight; }
+    public void setCurrentWeight(Double currentWeight) { this.currentWeight = currentWeight; }
 
-    public String getUserLastName() {
-        return userLastName;
-    }
+    public Double getRunningTime() { return runningTime; }
+    public void setRunningTime(Double runningTime) { this.runningTime = runningTime; }
 
-    public void setUserLastName(String userLastName) {
-        this.userLastName = userLastName;
-    }
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getFitnessGoal() {
-        return fitnessGoal;
-    }
-
-    public void setFitnessGoal(String fitnessGoal) {
-        this.fitnessGoal = fitnessGoal;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public List<ProgressRecord> getProgressRecords() {
-        return progressRecords;
-    }
-
-    public void setProgressRecords(List<ProgressRecord> progressRecords) {
-        this.progressRecords = progressRecords;
-    }
+    public List<ProgressRecord> getProgressRecords() { return progressRecords; }
+    public void setProgressRecords(List<ProgressRecord> progressRecords) { this.progressRecords = progressRecords; }
 }

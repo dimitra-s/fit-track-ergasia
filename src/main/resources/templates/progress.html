@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FitTrack - Ενημέρωση Προόδου</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3 text-center">
+                    <h4 class="mb-0"><i class="fa-solid fa-pen-to-square me-2"></i>Ενημέρωση Προόδου</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/profile/progress}" method="post">
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Τρέχον Βάρος (kg)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-weight-scale"></i></span>
+                                <input type="number" step="0.1" name="currentWeight"
+                                       class="form-control" th:value="${user.currentWeight}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Χρόνος Τρεξίματος (λεπτά)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-stopwatch"></i></span>
+                                <input type="number" step="0.1" name="runningTime"
+                                       class="form-control" th:value="${user.runningTime}" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary py-2">Αποθήκευση Αλλαγών</button>
+                            <a href="/profile" class="btn btn-outline-secondary">Ακύρωση</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
