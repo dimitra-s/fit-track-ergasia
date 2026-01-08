@@ -65,16 +65,17 @@ public class SecurityConfig {
         http
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register","/trainers", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/profile", "/logout", "/appointments", "/availability").authenticated()
+                        // Δημόσιες σελίδες
+                        .requestMatchers("/", "/login", "/register", "/trainers", "/css/**", "/js/**").permitAll()
+                        // Σελίδες που απαιτούν login
+                        .requestMatchers("/profile", "/logout", "/appointments", "/availability", "/trainer/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Η δική μας σελίδα
-                        .defaultSuccessUrl("/", true) // Μετά το login πήγαινε στην αρχική
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/profile", true)
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")

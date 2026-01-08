@@ -24,9 +24,9 @@ public class AuthViewController {
         return "login";
     }
 
+    // --- ΕΓΓΡΑΦΗ ΑΠΛΟΥ ΧΡΗΣΤΗ ---
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        // Το όνομα εδώ ΠΡΕΠΕΙ να είναι registerRequest
         model.addAttribute("registerRequest", new RegisterUserRequest("", "", "", "", ""));
         return "register";
     }

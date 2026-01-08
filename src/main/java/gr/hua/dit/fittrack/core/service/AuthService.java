@@ -9,4 +9,7 @@ public interface AuthService {
 
     // Προσθέστε αυτή τη γραμμή
     LoginResult login(LoginRequest request);
+
+
+
 }
