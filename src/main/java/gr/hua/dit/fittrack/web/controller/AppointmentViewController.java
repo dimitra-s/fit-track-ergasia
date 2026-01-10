@@ -1,6 +1,7 @@
 package gr.hua.dit.fittrack.web.controller;
 
 import gr.hua.dit.fittrack.core.service.AppointmentService;
+import gr.hua.dit.fittrack.core.service.TrainerService;
 import gr.hua.dit.fittrack.core.service.impl.dto.CreateAppointmentRequest;
 import gr.hua.dit.fittrack.core.service.impl.dto.CreateAppointmentResult;
 import gr.hua.dit.fittrack.core.repository.TrainerRepository;
@@ -15,11 +16,16 @@ import org.springframework.web.bind.annotation.*;
 public class AppointmentViewController {
 
     private final AppointmentService appointmentService;
-    private final TrainerRepository trainerRepository;
+    private final TrainerService trainerService;
 
-    public AppointmentViewController(AppointmentService appointmentService, TrainerRepository trainerRepository) {
+    public AppointmentViewController(
+            final AppointmentService appointmentService,
+            final TrainerService trainerService) {
+        if (appointmentService == null) throw new NullPointerException();
+        if (trainerService == null) throw new NullPointerException();
+
         this.appointmentService = appointmentService;
-        this.trainerRepository = trainerRepository;
+        this.trainerService = trainerService;
     }
 
     // 1. Εμφάνιση φόρμας νέου ραντεβού
@@ -29,7 +35,7 @@ public class AppointmentViewController {
         model.addAttribute("appointmentRequest", new CreateAppointmentRequest());
 
         // Φέρνουμε τους trainers για το dropdown list
-        model.addAttribute("trainers", trainerRepository.findAll());
+        model.addAttribute("trainers", trainerService.findAllTrainers());
 
         return "appointment-booking"; // HTML στο templates/appointment-booking.html
     }
@@ -43,7 +49,7 @@ public class AppointmentViewController {
     ) {
         // Α) Έλεγχος validation
         if (bindingResult.hasErrors()) {
-            model.addAttribute("trainers", trainerRepository.findAll());
+            model.addAttribute("trainers", trainerService.findAllTrainers());
             return "appointment-booking";
         }
 
@@ -52,7 +58,7 @@ public class AppointmentViewController {
 
         if (!result.created()) {
             model.addAttribute("errorMessage", result.reason());
-            model.addAttribute("trainers", trainerRepository.findAll());
+            model.addAttribute("trainers", trainerService.findAllTrainers());
             return "appointment-booking";
         }
 

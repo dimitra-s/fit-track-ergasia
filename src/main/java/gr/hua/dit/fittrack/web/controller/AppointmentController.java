@@ -5,6 +5,8 @@ import gr.hua.dit.fittrack.core.model.entity.User;
 import gr.hua.dit.fittrack.core.repository.TrainerRepository;
 import gr.hua.dit.fittrack.core.repository.UserRepository;
 import gr.hua.dit.fittrack.core.service.AppointmentService;
+import gr.hua.dit.fittrack.core.service.TrainerService;
+import gr.hua.dit.fittrack.core.service.UserService;
 import gr.hua.dit.fittrack.core.service.impl.dto.CreateAppointmentRequest;
 import gr.hua.dit.fittrack.core.service.impl.dto.CreateAppointmentResult;
 import jakarta.validation.Valid;
@@ -23,15 +25,19 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
-    private final TrainerRepository trainerRepository;
-    private final UserRepository userRepository;
+    private final TrainerService trainerService;
+    private final UserService userService;
 
-    public AppointmentController(AppointmentService appointmentService,
-                                 TrainerRepository trainerRepository,
-                                 UserRepository userRepository) {
+    public AppointmentController(final AppointmentService appointmentService,
+                                 final TrainerService trainerService,
+                                 final UserService userService) {
+        if (appointmentService == null) throw new NullPointerException();
+        if (trainerService == null) throw new NullPointerException();
+        if(userService == null) throw new NullPointerException();
+
         this.appointmentService = appointmentService;
-        this.trainerRepository = trainerRepository;
-        this.userRepository = userRepository;
+        this.trainerService = trainerService;
+        this.userService = userService;
     }
 
     // ------------------------
@@ -41,11 +47,11 @@ public class AppointmentController {
     public String showCreateForm(@RequestParam("trainerId") Long trainerId, Model model, Authentication authentication) {
         // 1. Βρίσκουμε τον συνδεδεμένο χρήστη από το email του
         String email = authentication.getName();
-        User currentUser = userRepository.findByEmailAddress(email)
+        User currentUser = userService.getUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // 2. Βρίσκουμε τον Trainer για τον οποίο γίνεται η κράτηση
-        Trainer trainer = trainerRepository.findById(trainerId)
+        Trainer trainer = trainerService.findTrainerById(trainerId)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
         // 3. Αρχικοποιούμε το Request με τα ID του χρήστη και του trainer
@@ -78,7 +84,7 @@ public class AppointmentController {
 
         // Αν υπάρχουν σφάλματα επικύρωσης (π.χ. κενά πεδία)
         if (bindingResult.hasErrors()) {
-            model.addAttribute("trainer", trainerRepository.findById(request.trainerId()).orElse(null));
+            model.addAttribute("trainer", trainerService.findTrainerById(request.trainerId()).orElse(null));
             model.addAttribute("availableSlots", appointmentService.getAvailableSlots(request.trainerId()));
             return "create-appointment";
         }
@@ -89,7 +95,7 @@ public class AppointmentController {
         // Αν το Service επιστρέψει αποτυχία (π.χ. η ώρα κλείστηκε ενδιάμεσα)
         if (!result.created()) {
             model.addAttribute("errorMessage", result.reason());
-            model.addAttribute("trainer", trainerRepository.findById(request.trainerId()).orElse(null));
+            model.addAttribute("trainer", trainerService.findTrainerById(request.trainerId()).orElse(null));
             model.addAttribute("availableSlots", appointmentService.getAvailableSlots(request.trainerId()));
             return "create-appointment";
         }

@@ -3,6 +3,8 @@ package gr.hua.dit.fittrack.web.controller;
 import gr.hua.dit.fittrack.core.model.entity.ProgressRecord;
 import gr.hua.dit.fittrack.core.model.entity.User;
 import gr.hua.dit.fittrack.core.repository.UserRepository;
+import gr.hua.dit.fittrack.core.service.ProgressService;
+import gr.hua.dit.fittrack.core.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,17 +16,23 @@ import java.time.LocalDate;
 @RequestMapping("/profile/progress")
 public class ProgressController {
 
-    private final UserRepository userRepository;
+    private final ProgressService progressService;
+    private final UserService userService;
 
-    public ProgressController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public ProgressController(
+            final ProgressService progressService, UserService userService) {
+        if(progressService == null) throw new NullPointerException();
+        if(userService ==  null) throw new NullPointerException();
+
+        this.progressService = progressService;
+        this.userService = userService;
     }
 
     // 1) Εμφάνιση της φόρμας (Get)
     @GetMapping
     public String showProgressForm(Authentication authentication, Model model) {
         String email = authentication.getName();
-        User user = userRepository.findByEmailAddress(email)
+        User user = userService.getUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε"));
 
         model.addAttribute("user", user);
@@ -39,7 +47,7 @@ public class ProgressController {
                                     @RequestParam(required = false) String notes) {
 
         String email = authentication.getName();
-        User user = userRepository.findByEmailAddress(email)
+        User user = userService.getUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Ο χρήστης δεν βρέθηκε"));
 
         // 1. Δημιουργούμε νέα εγγραφή ιστορικού (ProgressRecord)
@@ -58,7 +66,7 @@ public class ProgressController {
         user.getProgressRecords().add(record);
 
         // 4. Αποθηκεύουμε τον χρήστη (λόγω CascadeType.ALL, θα σωθεί και το Record)
-        userRepository.save(user);
+        //userRepository.save(user);
 
         return "redirect:/profile?success";
     }
