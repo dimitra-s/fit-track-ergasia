@@ -3,8 +3,18 @@ package gr.hua.dit.fittrack.core.model.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+//@Entity
+//@Table(name = "appointments")
 @Entity
-@Table(name = "appointments")
+@Table(
+        name = "appointments",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_appointments_trainer_datetime",
+                        columnNames = {"trainer_id", "date_time"}
+                )
+        }
+)
 public class Appointment {
 
     @Id
@@ -40,7 +50,6 @@ public class Appointment {
 
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
-
     // Constructors
     public Appointment() {
     }

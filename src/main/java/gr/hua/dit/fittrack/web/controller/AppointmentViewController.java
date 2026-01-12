@@ -97,6 +97,7 @@ public class AppointmentViewController {
         if (!result.created()) {
             model.addAttribute("errorMessage", result.reason());
             model.addAttribute("trainers", trainerService.findAllTrainers());
+            model.addAttribute("appointmentRequest", fixed);
             return "appointment-booking";
         }
 

@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .requestCache(cache -> cache.disable())
                 .authorizeHttpRequests(auth -> auth
                         // public
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(
                                 "/",
                                 "/login",
@@ -86,6 +87,10 @@ public class SecurityConfig {
                         // everything else needs login
                         .anyRequest().authenticated()
                 )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")
+                )
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
 
 
                 .formLogin(form -> form

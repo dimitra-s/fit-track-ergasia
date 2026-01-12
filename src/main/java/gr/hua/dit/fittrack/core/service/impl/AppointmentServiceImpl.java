@@ -9,6 +9,7 @@ import gr.hua.dit.fittrack.core.service.AppointmentService;
 import gr.hua.dit.fittrack.core.service.WeatherService;
 import gr.hua.dit.fittrack.core.service.impl.dto.CreateAppointmentRequest;
 import gr.hua.dit.fittrack.core.service.impl.dto.CreateAppointmentResult;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,26 +43,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    @Transactional
+   // @Transactional
     public CreateAppointmentResult createAppointment(CreateAppointmentRequest req, boolean notify) {
         if (req.dateTime().isBefore(LocalDateTime.now())) {
             return CreateAppointmentResult.fail("Δεν επιτρέπονται ραντεβού στο παρελθόν.");
-        }
-
-        // Προσοχή στο όνομα εδώ αν το Repository σου έχει Trainer_Id
-        boolean hasAvailability = trainerAvailabilityRepository
-                .existsByTrainer_IdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-                        req.trainerId(), req.dateTime(), req.dateTime()
-                );
-
-//        if (!hasAvailability) {
-//            return CreateAppointmentResult.fail("Ο trainer δεν είναι διαθέσιμος αυτή την ώρα.");
-//        }
-
-        // Χρησιμοποιούμε τη νέα μέθοδο findByTrainerId
-        boolean trainerBusy = appointmentRepository.existsByTrainerIdAndDateTime(req.trainerId(), req.dateTime());
-        if (trainerBusy) {
-            return CreateAppointmentResult.fail("Υπάρχει ήδη ραντεβού του trainer την ίδια ώρα.");
         }
 
         User user = userRepository.findById(req.userId()).orElse(null);
@@ -82,7 +67,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (req.type() == AppointmentType.OUTDOOR) {
             try {
                 var weather = weatherService.getWeatherFor(req.dateTime(), "Athens");
-
                 if (weather != null && weather.getSummary() != null) {
                     appt.setWeatherSummary(weather.getSummary());
                 }
@@ -91,9 +75,69 @@ public class AppointmentServiceImpl implements AppointmentService {
             }
         }
 
-        Appointment saved = appointmentRepository.save(appt);
-        return CreateAppointmentResult.success(saved);
+        try {
+            Appointment saved = appointmentRepository.saveAndFlush(appt);
+            return CreateAppointmentResult.success(saved);
+        } catch (DataIntegrityViolationException ex) {
+            // εδώ θα πέσει ο 2ος, όταν πάνε δύο μαζί
+            return CreateAppointmentResult.fail(
+                    "Ο συγκεκριμένος γυμναστής είναι μη διαθέσιμος αυτή την ημερομηνία και ώρα. Διάλεξε άλλη ώρα/ημερομηνία ή άλλον γυμναστή."
+            );
+        }
     }
+//    @Override
+//    @Transactional
+//    public CreateAppointmentResult createAppointment(CreateAppointmentRequest req, boolean notify) {
+//        if (req.dateTime().isBefore(LocalDateTime.now())) {
+//            return CreateAppointmentResult.fail("Δεν επιτρέπονται ραντεβού στο παρελθόν.");
+//        }
+//
+//        // Προσοχή στο όνομα εδώ αν το Repository σου έχει Trainer_Id
+//        boolean hasAvailability = trainerAvailabilityRepository
+//                .existsByTrainer_IdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+//                        req.trainerId(), req.dateTime(), req.dateTime()
+//                );
+//
+////        if (!hasAvailability) {
+////            return CreateAppointmentResult.fail("Ο trainer δεν είναι διαθέσιμος αυτή την ώρα.");
+////        }
+//
+//        // Χρησιμοποιούμε τη νέα μέθοδο findByTrainerId
+//        boolean trainerBusy = appointmentRepository.existsByTrainerIdAndDateTime(req.trainerId(), req.dateTime());
+//        if (trainerBusy) {
+//            return CreateAppointmentResult.fail("Υπάρχει ήδη ραντεβού του trainer την ίδια ώρα.");
+//        }
+//
+//        User user = userRepository.findById(req.userId()).orElse(null);
+//        Trainer trainer = trainerRepository.findById(req.trainerId()).orElse(null);
+//
+//        if (user == null || trainer == null) {
+//            return CreateAppointmentResult.fail("Δεν βρέθηκε ο χρήστης ή ο trainer.");
+//        }
+//
+//        Appointment appt = new Appointment();
+//        appt.setUser(user);
+//        appt.setTrainer(trainer);
+//        appt.setDateTime(req.dateTime());
+//        appt.setType(req.type());
+//        appt.setStatus(AppointmentStatus.PENDING);
+//        appt.setNotes(req.notes());
+//
+//        if (req.type() == AppointmentType.OUTDOOR) {
+//            try {
+//                var weather = weatherService.getWeatherFor(req.dateTime(), "Athens");
+//
+//                if (weather != null && weather.getSummary() != null) {
+//                    appt.setWeatherSummary(weather.getSummary());
+//                }
+//            } catch (Exception e) {
+//                appt.setWeatherSummary("Weather unavailable");
+//            }
+//        }
+//
+//        Appointment saved = appointmentRepository.save(appt);
+//        return CreateAppointmentResult.success(saved);
+//    }
 
 //    @Override
 //    public Appointment findById(Long id) {
