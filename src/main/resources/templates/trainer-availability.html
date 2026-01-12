@@ -65,7 +65,7 @@
                         </td>
                         <td>
                             <div class="d-flex gap-2">
-                                <a th:href="@{/appointments/edit/{id}(id=${app.id})}" class="btn btn-sm btn-outline-primary">
+                                <a th:href="@{/appointments/notes/{id}(id=${app.id})}" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form th:if="${app.status != 'CANCELLED'}" th:action="@{/appointments/cancel/{id}(id=${app.id})}" method="post">

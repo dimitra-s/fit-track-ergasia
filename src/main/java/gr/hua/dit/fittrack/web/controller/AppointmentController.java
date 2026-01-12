@@ -1,5 +1,6 @@
 package gr.hua.dit.fittrack.web.controller;
 
+import gr.hua.dit.fittrack.core.model.entity.Appointment;
 import gr.hua.dit.fittrack.core.model.entity.AppointmentType;
 import gr.hua.dit.fittrack.core.model.entity.Trainer;
 import gr.hua.dit.fittrack.core.model.entity.User;
@@ -156,6 +157,29 @@ public class AppointmentController {
         redirectAttributes.addFlashAttribute("success", "Το ραντεβού ακυρώθηκε.");
         return "redirect:/appointments/my-appointments";
     }
+
+    @GetMapping("/{id}/notes")
+    public String showNotes(@PathVariable Long id, Model model) {
+
+        Appointment appointment = appointmentService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        model.addAttribute("appointment", appointment);
+        return "appointment-notes";
+    }
+
+    @PostMapping("/{id}/notes")
+    public String saveNotes(@PathVariable Long id,
+                            @RequestParam("notes") String notes,
+                            RedirectAttributes redirectAttributes) {
+
+        appointmentService.updateNotes(id, notes);
+
+        redirectAttributes.addFlashAttribute("success",
+                "Οι σημειώσεις αποθηκεύτηκαν επιτυχώς");
+        return "redirect:/appointments/my-appointments";
+    }
+
 
 
 }

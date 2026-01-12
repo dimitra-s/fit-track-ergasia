@@ -6,6 +6,7 @@ import gr.hua.dit.fittrack.core.service.impl.dto.CreateAppointmentResult;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface AppointmentService {
 
@@ -20,7 +21,9 @@ public interface AppointmentService {
     void deleteAppointment(Long id);
 
     // Εύρεση συγκεκριμένου ραντεβού (για τη σελίδα σημειώσεων)
-    Appointment findById(Long id);
+    Optional<Appointment> findById(Long id);
+
+    //Appointment findById(Long id);
 
     // Λίστα ραντεβού για Trainer βάσει email
     List<Appointment> getAppointmentsForTrainer(String email);
@@ -39,4 +42,8 @@ public interface AppointmentService {
     // Διαχείριση διαθεσιμότητας
     List<LocalDateTime> getAvailableSlots(Long trainerId);
     void setTrainerAvailability(Long trainerId, LocalDateTime start, LocalDateTime end);
+
+
+
+
 }

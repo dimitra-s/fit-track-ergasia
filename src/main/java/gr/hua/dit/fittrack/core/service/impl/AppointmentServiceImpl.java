@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,10 +95,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         return CreateAppointmentResult.success(saved);
     }
 
+//    @Override
+//    public Appointment findById(Long id) {
+//        return appointmentRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Το ραντεβού δεν βρέθηκε."));
+//    }
+
     @Override
-    public Appointment findById(Long id) {
-        return appointmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Το ραντεβού δεν βρέθηκε."));
+    public Optional<Appointment> findById(Long id) {
+        return appointmentRepository.findById(id);
     }
 
     @Override
@@ -117,7 +123,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateStatus(Long id, String status) {
-        Appointment app = findById(id);
+        Appointment app = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
         app.setStatus(AppointmentStatus.valueOf(status.toUpperCase()));
         appointmentRepository.save(app);
     }
@@ -125,10 +133,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateNotes(Long id, String notes) {
-        Appointment app = findById(id);
+        Appointment app = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
         app.setNotes(notes);
         appointmentRepository.save(app);
     }
+
 
     @Override
     public List<LocalDateTime> getAvailableSlots(Long trainerId) {
@@ -189,6 +200,4 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setStatus(AppointmentStatus.CANCELLED);
         appointmentRepository.save(appointment);
     }
-
-
 }

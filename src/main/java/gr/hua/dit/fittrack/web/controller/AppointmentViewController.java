@@ -145,7 +145,8 @@ public class AppointmentViewController {
 
     @GetMapping("/notes/{id}") // Διόρθωση path
     public String showNotesPage(@PathVariable Long id, Model model) {
-        Appointment app = appointmentService.findById(id);
+        Appointment app = appointmentService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
         model.addAttribute("appointment", app);
         return "appointments-notes";
     }
