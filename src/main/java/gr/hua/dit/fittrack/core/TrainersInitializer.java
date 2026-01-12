@@ -6,16 +6,26 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.core.env.Environment;   // ⬅️ ΝΕΟ import
 
 @Configuration
 public class TrainersInitializer {
 
     @Bean
-    CommandLineRunner initTrainers(TrainerRepository trainerRepository, PasswordEncoder passwordEncoder) {
+    CommandLineRunner initTrainers(
+            TrainerRepository trainerRepository,
+            PasswordEncoder passwordEncoder,
+            Environment env                       // ⬅️ ΝΕΑ παράμετρος
+    ) {
         return args -> {
+
+            // ⬇️ ΑΥΤΟ ΘΕΛΟΥΜΕ ΝΑ ΔΟΥΜΕ
+            System.out.println("=== DB URL ===");
+            System.out.println(env.getProperty("spring.datasource.url"));
+            System.out.println("==============");
+
             if (trainerRepository.count() == 0) {
 
-                // Δημιουργία Γιάννη
                 Trainer t1 = new Trainer();
                 t1.setFirstName("Γιάννης");
                 t1.setLastName("Παπαδόπουλος");
@@ -26,7 +36,6 @@ public class TrainersInitializer {
                 t1.setRole("ROLE_TRAINER");
                 trainerRepository.save(t1);
 
-                // Δημιουργία Μαρίας
                 Trainer t2 = new Trainer();
                 t2.setFirstName("Μαρία");
                 t2.setLastName("Δημητρίου");

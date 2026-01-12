@@ -54,7 +54,8 @@
                     <tr th:each="app : ${appointments}">
                         <td th:text="${#temporals.format(app.dateTime, 'dd/MM/yyyy')}"></td>
                         <td th:text="${#temporals.format(app.dateTime, 'HH:mm')}"></td>
-                        <td th:text="${app.user.firstName + ' ' + app.user.lastName}"></td>
+                        <!--<td th:text="${app.user.firstName + ' ' + app.user.lastName}"></td>-->
+                        <td th:text="${app.user.emailAddress}"></td>
                         <td th:text="${app.type}"></td>
                         <td>
                             <span class="badge"
