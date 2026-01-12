@@ -34,6 +34,8 @@ public interface AppointmentService {
     // ✅ Λειτουργία: Καταγραφή σημειώσεων/πλάνου προπόνησης
     void updateNotes(Long id, String notes);
 
+    void cancelAppointment(Long appointmentId);
+
     // Διαχείριση διαθεσιμότητας
     List<LocalDateTime> getAvailableSlots(Long trainerId);
     void setTrainerAvailability(Long trainerId, LocalDateTime start, LocalDateTime end);

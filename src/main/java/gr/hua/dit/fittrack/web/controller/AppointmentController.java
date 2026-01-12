@@ -146,4 +146,16 @@ public class AppointmentController {
         redirectAttributes.addFlashAttribute("success", "Το ραντεβού σας καταχωρήθηκε επιτυχώς!");
         return "redirect:/profile";
     }
+
+    @PostMapping("/cancel/{id}")
+    public String cancel(@PathVariable Long id,
+                         RedirectAttributes redirectAttributes) {
+
+        appointmentService.cancelAppointment(id); // ή όπως το έχεις
+
+        redirectAttributes.addFlashAttribute("success", "Το ραντεβού ακυρώθηκε.");
+        return "redirect:/appointments/my-appointments";
+    }
+
+
 }

@@ -48,7 +48,25 @@
                         </td>
 
                         <td class="text-center">
-                            <button class="btn btn-outline-danger btn-sm">Ακύρωση</button>
+
+                            <!-- Κατάσταση -->
+                            <span class="badge bg-secondary"
+                                  th:text="${appointment.status != null ? appointment.status : 'UNKNOWN'}">
+                            </span>
+
+                            <!-- Κουμπί Ακύρωση (μόνο αν δεν είναι CANCELLED) -->
+                            <form th:if="${appointment.status == null or appointment.status.name() != 'CANCELLED'}"
+                                  th:action="@{/appointments/cancel/{id}(id=${appointment.id})}"
+                                  method="post"
+                                  class="d-inline ms-2">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit"
+                                        class="btn btn-outline-danger btn-sm"
+                                        onclick="return confirm('Ακύρωση ραντεβού;')">
+                                    Ακύρωση
+                                </button>
+                            </form>
+
                         </td>
 
                     </tr>

@@ -180,4 +180,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<Appointment> getAppointmentsByUser(String userEmail) {
         return appointmentRepository.findByUser_EmailAddress(userEmail);
     }
+
+    @Override
+    public void cancelAppointment(Long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+        appointmentRepository.save(appointment);
+    }
+
+
 }

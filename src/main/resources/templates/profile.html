@@ -74,6 +74,10 @@
                             <a th:href="@{/appointments/new}" class="btn btn-success">Κλείσε Ραντεβού</a>
 
                         </div>
+                        <div class="col-6">
+                            <a th:href="@{/appointments/my-appointments}" class="btn btn-success">Τα Ραντεβού Μου</a>
+
+                        </div>
                     </div>
 
                     <div th:if="${user.progressRecords != null and !user.progressRecords.isEmpty()}">
