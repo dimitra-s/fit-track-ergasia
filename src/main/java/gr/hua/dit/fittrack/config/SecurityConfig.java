@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -84,20 +85,48 @@ public class SecurityConfig {
                         // everything else needs login
                         .anyRequest().authenticated()
                 )
+//                .formLogin(form -> form
+//                        .loginPage("/login")
+//                        .permitAll()
+//                        .successHandler((request, response, authentication) -> {
+//                            boolean isTrainer = authentication.getAuthorities().stream()
+//                                    .anyMatch(a -> a.getAuthority().equals("ROLE_TRAINER"));
+//
+//                            if (isTrainer) {
+//                                response.sendRedirect("/appointments/my-appointments"); // A
+//                            } else {
+//                                response.sendRedirect("/appointments/new"); // USER flow
+//                            }
+//                        })
+//                )
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll()
                         .successHandler((request, response, authentication) -> {
-                            boolean isTrainer = authentication.getAuthorities().stream()
-                                    .anyMatch(a -> a.getAuthority().equals("ROLE_TRAINER"));
 
-                            if (isTrainer) {
-                                response.sendRedirect("/appointments/my-appointments"); // A
-                            } else {
-                                response.sendRedirect("/appointments/new"); // USER flow
+                            // αν υπάρχει saved request, γύρνα εκεί
+                            var handler = new SavedRequestAwareAuthenticationSuccessHandler();
+                            handler.setDefaultTargetUrl("/"); // fallback
+                            handler.setAlwaysUseDefaultTargetUrl(false);
+
+                            // Αν ΔΕΝ υπάρχει saved request, κάνε το δικό σου role redirect:
+                            boolean hasSaved = request.getSession(false) != null
+                                    && request.getSession(false).getAttribute("SPRING_SECURITY_SAVED_REQUEST") != null;
+
+                            if (!hasSaved) {
+                                boolean isTrainer = authentication.getAuthorities().stream()
+                                        .anyMatch(a -> a.getAuthority().equals("ROLE_TRAINER"));
+
+                                response.sendRedirect(isTrainer ? "/appointments/my-appointments" : "/appointments/new");
+                                return;
                             }
+
+                            handler.onAuthenticationSuccess(request, response, authentication);
                         })
                 )
+
+
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
