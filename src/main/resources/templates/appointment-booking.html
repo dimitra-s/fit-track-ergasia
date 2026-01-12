@@ -19,9 +19,10 @@
                         <span th:text="${errorMessage}"></span>
                     </div>
 
-                    <form th:action="@{/appointments/create}" th:object="${appointmentRequest}" method="post">
+                    <form th:action="@{/appointments/new}" th:object="${appointmentRequest}" method="post">
 
-                        <div class="mb-4">
+
+                    <div class="mb-4">
                             <label for="trainerSelect" class="form-label fw-bold">Επιλέξτε Personal Trainer</label>
                             <select id="trainerSelect" th:field="*{trainerId}" class="form-select form-select-lg" required>
                                 <option value="" selected disabled>Επιλέξτε από τη λίστα...</option>
@@ -39,12 +40,21 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="workoutType" class="form-label fw-bold">Είδος Προπόνησης</label>
-                            <input type="text" id="workoutType" th:field="*{type}"
-                                   class="form-control form-control-lg"
-                                   placeholder="π.χ. Ατομικό Πρόγραμμα, Βάρη, HIIT" required>
+                            <label for="typeSelect" class="form-label fw-bold">Είδος Προπόνησης</label>
+                            <select id="typeSelect" th:field="*{type}" class="form-select form-select-lg" required>
+                                <option value="" selected disabled>Επιλέξτε...</option>
+                                <option value="INDOOR">INDOOR</option>
+                                <option value="OUTDOOR">OUTDOOR</option>
+                            </select>
                             <div class="form-text text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
                         </div>
+
+                        <div th:if="${#fields.hasAnyErrors()}" class="alert alert-danger">
+                            <ul>
+                                <li th:each="e : ${#fields.errors('*')}" th:text="${e}"></li>
+                            </ul>
+                        </div>
+
 
                         <div class="d-grid gap-2 mt-5">
                             <button type="submit" class="btn btn-primary btn-lg shadow-sm">Οριστικοποίηση Ραντεβού</button>

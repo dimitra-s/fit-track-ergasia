@@ -1,14 +1,12 @@
 package gr.hua.dit.fittrack.core.service.impl;
 
-import gr.hua.dit.fittrack.core.model.entity.Appointment;
-import gr.hua.dit.fittrack.core.model.entity.Trainer;
-import gr.hua.dit.fittrack.core.model.entity.User;
-import gr.hua.dit.fittrack.core.model.entity.TrainerAvailability;
+import gr.hua.dit.fittrack.core.model.entity.*;
 import gr.hua.dit.fittrack.core.repository.AppointmentRepository;
 import gr.hua.dit.fittrack.core.repository.TrainerAvailabilityRepository;
 import gr.hua.dit.fittrack.core.repository.TrainerRepository;
 import gr.hua.dit.fittrack.core.repository.UserRepository;
 import gr.hua.dit.fittrack.core.service.AppointmentService;
+import gr.hua.dit.fittrack.core.service.WeatherService;
 import gr.hua.dit.fittrack.core.service.impl.dto.CreateAppointmentRequest;
 import gr.hua.dit.fittrack.core.service.impl.dto.CreateAppointmentResult;
 import org.springframework.stereotype.Service;
@@ -22,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
+    private final WeatherService weatherService;
     private final UserRepository userRepository;
     private final AppointmentRepository appointmentRepository;
     private final TrainerRepository trainerRepository;
@@ -31,12 +30,14 @@ public class AppointmentServiceImpl implements AppointmentService {
             UserRepository userRepository,
             AppointmentRepository appointmentRepository,
             TrainerRepository trainerRepository,
-            TrainerAvailabilityRepository trainerAvailabilityRepository
+            TrainerAvailabilityRepository trainerAvailabilityRepository,
+            WeatherService weatherService
     ) {
         this.userRepository = userRepository;
         this.appointmentRepository = appointmentRepository;
         this.trainerRepository = trainerRepository;
         this.trainerAvailabilityRepository = trainerAvailabilityRepository;
+        this.weatherService = weatherService;
     }
 
     @Override
@@ -52,9 +53,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                         req.trainerId(), req.dateTime(), req.dateTime()
                 );
 
-        if (!hasAvailability) {
-            return CreateAppointmentResult.fail("Ο trainer δεν είναι διαθέσιμος αυτή την ώρα.");
-        }
+//        if (!hasAvailability) {
+//            return CreateAppointmentResult.fail("Ο trainer δεν είναι διαθέσιμος αυτή την ώρα.");
+//        }
 
         // Χρησιμοποιούμε τη νέα μέθοδο findByTrainerId
         boolean trainerBusy = appointmentRepository.existsByTrainerIdAndDateTime(req.trainerId(), req.dateTime());
@@ -74,8 +75,20 @@ public class AppointmentServiceImpl implements AppointmentService {
         appt.setTrainer(trainer);
         appt.setDateTime(req.dateTime());
         appt.setType(req.type());
-        appt.setStatus("PENDING");
+        appt.setStatus(AppointmentStatus.PENDING);
         appt.setNotes(req.notes());
+
+        if (req.type() == AppointmentType.OUTDOOR) {
+            try {
+                var weather = weatherService.getWeatherFor(req.dateTime(), "Athens");
+
+                if (weather != null && weather.getSummary() != null) {
+                    appt.setWeatherSummary(weather.getSummary());
+                }
+            } catch (Exception e) {
+                appt.setWeatherSummary("Weather unavailable");
+            }
+        }
 
         Appointment saved = appointmentRepository.save(appt);
         return CreateAppointmentResult.success(saved);
@@ -105,7 +118,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void updateStatus(Long id, String status) {
         Appointment app = findById(id);
-        app.setStatus(status);
+        app.setStatus(AppointmentStatus.valueOf(status.toUpperCase()));
         appointmentRepository.save(app);
     }
 

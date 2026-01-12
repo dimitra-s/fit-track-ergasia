@@ -63,39 +63,41 @@ public class SecurityConfig {
     public SecurityFilterChain uiChain(HttpSecurity http) throws Exception {
 
         http
-                // ΟΧΙ /api/** εδώ (αυτό το πιάνει το apiChain)
                 .securityMatcher("/**")
-
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ UI δημόσια endpoints
+                        // public
                         .requestMatchers(
                                 "/",
                                 "/login",
                                 "/register",
                                 "/error",
                                 "/css/**", "/js/**", "/images/**",
-                                "/trainers"
-
-                        ).permitAll()
-
-                        // ✅ Swagger δημόσια (μόνο για να βλέπεις docs)
-                        .requestMatchers(
+                                "/trainers",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
 
-                        // ✅ όλα τα άλλα UI θέλουν login
+                        // TRAINER only (Β)
+                        .requestMatchers("/trainer/availability/**").hasRole("TRAINER")
+
+                        // everything else needs login
                         .anyRequest().authenticated()
                 )
-
                 .formLogin(form -> form
                         .loginPage("/login")
-                        // σημαντικό: να επιτρέπεται το POST /login
                         .permitAll()
-                        .defaultSuccessUrl("/profile", true)
-                )
+                        .successHandler((request, response, authentication) -> {
+                            boolean isTrainer = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_TRAINER"));
 
+                            if (isTrainer) {
+                                response.sendRedirect("/appointments/my-appointments"); // A
+                            } else {
+                                response.sendRedirect("/appointments/new"); // USER flow
+                            }
+                        })
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
@@ -106,6 +108,9 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
+
 
 
     /**

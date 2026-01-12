@@ -28,6 +28,7 @@
                         <th>Ώρα</th>
                         <th>Προπονητής</th>
                         <th>Κατηγορία</th>
+                        <th>Καιρός</th>
                         <th class="text-center">Κατάσταση</th>
                     </tr>
                     </thead>
@@ -37,9 +38,19 @@
                         <td th:text="${#temporals.format(appointment.dateTime, 'HH:mm')}"></td>
                         <td class="fw-bold" th:text="${appointment.trainer.firstName + ' ' + appointment.trainer.lastName}"></td>
                         <td><span class="badge bg-info text-dark" th:text="${appointment.type}"></span></td>
+
+                        <td>
+                            <span th:if="${appointment.weatherSummary != null}" th:text="${appointment.weatherSummary}">
+                            </span>
+                            <span th:if="${appointment.weatherSummary == null}">
+                                –
+                            </span>
+                        </td>
+
                         <td class="text-center">
                             <button class="btn btn-outline-danger btn-sm">Ακύρωση</button>
                         </td>
+
                     </tr>
                     </tbody>
                 </table>

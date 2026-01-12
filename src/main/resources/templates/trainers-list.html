@@ -53,8 +53,8 @@
                 </p>
 
                 <div sec:authorize="isAuthenticated()" class="mt-auto">
-                    <a th:href="@{/appointments/create(trainerId=${trainer.id})}"
-                       class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+                    <a th:href="@{/appointments/new(trainerId=${trainer.id})}"
+                    class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
                         <i class="bi bi-calendar-plus me-1"></i> Κλείσιμο Ραντεβού
                     </a>
                 </div>

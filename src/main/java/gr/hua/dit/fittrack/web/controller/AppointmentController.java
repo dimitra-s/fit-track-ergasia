@@ -1,5 +1,6 @@
 package gr.hua.dit.fittrack.web.controller;
 
+import gr.hua.dit.fittrack.core.model.entity.AppointmentType;
 import gr.hua.dit.fittrack.core.model.entity.Trainer;
 import gr.hua.dit.fittrack.core.model.entity.User;
 import gr.hua.dit.fittrack.core.repository.TrainerRepository;
@@ -20,8 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Controller
-@RequestMapping("/appointments")
+//@Controller
+@RequestMapping("/api/appointments")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
@@ -60,7 +61,7 @@ public class AppointmentController {
                 currentUser.getId(),
                 trainerId,
                 null, // Το dateTime θα επιλεγεί από το dropdown
-                "",
+                AppointmentType.INDOOR,
                 ""
         );
 

@@ -1,6 +1,7 @@
 package gr.hua.dit.fittrack.web.controller;
 
 import gr.hua.dit.fittrack.core.model.entity.Appointment;
+import gr.hua.dit.fittrack.core.model.entity.AppointmentType;
 import gr.hua.dit.fittrack.core.model.entity.Trainer;
 import gr.hua.dit.fittrack.core.repository.TrainerRepository;
 import gr.hua.dit.fittrack.core.service.AppointmentService;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import gr.hua.dit.fittrack.core.repository.UserRepository;
+
 
 import java.util.List;
 
@@ -23,35 +26,73 @@ public class AppointmentViewController {
     private final AppointmentService appointmentService;
     private final TrainerService trainerService;
     private final TrainerRepository trainerRepository; // Προσθήκη
+    private final UserRepository userRepository;
 
     public AppointmentViewController(
             final AppointmentService appointmentService,
             final TrainerService trainerService,
-            final TrainerRepository trainerRepository) {
+            final TrainerRepository trainerRepository,
+            UserRepository userRepository) {
         this.appointmentService = appointmentService;
         this.trainerService = trainerService;
         this.trainerRepository = trainerRepository;
+        this.userRepository = userRepository;
     }
+
+//    @GetMapping("/new")
+//    public String showCreateForm(Model model) {
+//        model.addAttribute("appointmentRequest", new CreateAppointmentRequest());
+//        model.addAttribute("trainers", trainerService.findAllTrainers());
+//        return "appointment-booking";
+//    }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("appointmentRequest", new CreateAppointmentRequest());
+        System.out.println("HIT GET /appointments/new");
+
+        model.addAttribute("appointmentRequest",
+                new CreateAppointmentRequest(
+                        0L,                 // προσωρινό - θα αντικατασταθεί στο POST
+                        0L,
+                        null,
+                        AppointmentType.INDOOR,
+                        ""
+                )
+        );
         model.addAttribute("trainers", trainerService.findAllTrainers());
         return "appointment-booking";
     }
-
     @PostMapping("/new")
     public String processAppointment(
-            @Valid @ModelAttribute("appointmentRequest") CreateAppointmentRequest request,
+            @ModelAttribute("appointmentRequest") CreateAppointmentRequest request,
             BindingResult bindingResult,
-            Model model
+            Model model,
+            Authentication authentication
     ) {
-        if (bindingResult.hasErrors()) {
+        // 1) Βρες userId από login
+        String email = authentication.getName();
+        Long userId = userRepository.findByEmailAddress(email)
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getId();
+
+        // 2) Φτιάξε το fixed request (με σωστό userId)
+        CreateAppointmentRequest fixed = new CreateAppointmentRequest(
+                userId,
+                request.trainerId(),
+                request.dateTime(),
+                request.type(),
+                request.notes()
+        );
+
+        // 3) ΚΑΝΕ validation πάνω στο fixed (προαιρετικά, αλλά καλό)
+        // πιο απλά: έλεγξε βασικά nulls εδώ:
+        if (fixed.trainerId() == null || fixed.dateTime() == null || fixed.type() == null) {
+            model.addAttribute("errorMessage", "Συμπλήρωσε όλα τα πεδία.");
             model.addAttribute("trainers", trainerService.findAllTrainers());
             return "appointment-booking";
         }
 
-        CreateAppointmentResult result = appointmentService.createAppointment(request, true);
+        CreateAppointmentResult result = appointmentService.createAppointment(fixed, true);
 
         if (!result.created()) {
             model.addAttribute("errorMessage", result.reason());
@@ -61,6 +102,59 @@ public class AppointmentViewController {
 
         return "redirect:/appointments/my-appointments?success";
     }
+
+  //  @PostMapping("/new")
+//    public String processAppointment(
+//            @Valid @ModelAttribute("appointmentRequest") CreateAppointmentRequest request,
+//            BindingResult bindingResult,
+//            Model model,
+//            Authentication authentication
+//    ) {
+//
+//            if (bindingResult.hasErrors()) {
+//                System.out.println("BINDING ERRORS:");
+//                bindingResult.getFieldErrors().forEach(err ->
+//                        System.out.println(" - field=" + err.getField()
+//                                + " rejected=" + err.getRejectedValue()
+//                                + " msg=" + err.getDefaultMessage())
+//                );
+//
+//                model.addAttribute("trainers", trainerService.findAllTrainers());
+//                return "appointment-booking";
+//            }
+//
+//
+//
+//        String email = authentication.getName();
+//        Long userId = userRepository.findByEmailAddress(email)
+//                .orElseThrow(() -> new RuntimeException("User not found"))
+//                .getId();
+//
+//        CreateAppointmentRequest fixed = new CreateAppointmentRequest(
+//                userId,
+//                request.trainerId(),
+//                request.dateTime(),
+//                request.type(),
+//                request.notes()
+//        );
+//        System.out.println("SUBMIT appointment: trainerId=" + request.trainerId()
+//                + ", dateTime=" + request.dateTime()
+//                + ", type=" + request.type());
+//
+//        CreateAppointmentResult result = appointmentService.createAppointment(fixed, true);
+//
+//        System.out.println("RESULT created=" + result.created() + " reason=" + result.reason());
+//
+//
+//        if (!result.created()) {
+//            model.addAttribute("errorMessage", result.reason());
+//            model.addAttribute("trainers", trainerService.findAllTrainers());
+//            return "appointment-booking";
+//        }
+//
+//        return "redirect:/appointments/my-appointments?success";
+//    }
+
 
     // Η ΜΕΓΑΛΗ ΑΛΛΑΓΗ ΕΔΩ
     @GetMapping("/my-appointments")

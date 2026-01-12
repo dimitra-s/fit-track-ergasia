@@ -65,11 +65,12 @@
 
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Τύπος Συνεδρίας</label>
-                            <input type="text"
-                                   class="form-control"
-                                   name="type"
-                                   th:value="${appointmentRequest?.type}"
-                                   placeholder="π.χ. Yoga, Crossfit" required>
+                            <select class="form-select" name="type" required>
+                                <option value="" disabled selected>Επιλέξτε τύπο</option>
+                                <option value="INDOOR">Indoor</option>
+                                <option value="OUTDOOR">Outdoor</option>
+                            </select>
+
                         </div>
 
                         <div class="mb-4">

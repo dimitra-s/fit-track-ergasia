@@ -22,7 +22,7 @@ public class Appointment {
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
-    private String type; // π.χ. "Yoga", "Crossfit", "Personal"
+//    private String type; // π.χ. "Yoga", "Crossfit", "Personal"
 
     @Column(length = 80)
     private String location;
@@ -30,16 +30,22 @@ public class Appointment {
     @Column(length = 255)
     private String weatherSummary;
 
-    private String status = "PENDING"; // Default τιμή για τα νέα ραντεβού
+//    private String status = "PENDING"; // Default τιμή για τα νέα ραντεβού
 
     @Column(length = 2000) // Μεγάλο μήκος για να χωράει το πλάνο
     private String notes;
+
+    @Enumerated(EnumType.STRING)
+    private AppointmentType type;
+
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status;
 
     // Constructors
     public Appointment() {
     }
 
-    public Appointment(User user, Trainer trainer, LocalDateTime dateTime, String type, String notes, String location, String weatherSummary) {
+    public Appointment(User user, Trainer trainer, LocalDateTime dateTime, AppointmentType type, String notes, String location, String weatherSummary) {
         this.user = user;
         this.trainer = trainer;
         this.dateTime = dateTime;
@@ -62,8 +68,8 @@ public class Appointment {
     public LocalDateTime getDateTime() { return dateTime; }
     public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+//    public String getType() { return type; }
+//    public void setType(String type) { this.type = type; }
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
@@ -74,6 +80,9 @@ public class Appointment {
     public String getWeatherSummary() { return weatherSummary; }
     public void setWeatherSummary(String weatherSummary) { this.weatherSummary = weatherSummary; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public AppointmentType getType() { return type; }
+    public void setType(AppointmentType type) { this.type = type; }
+
+    public AppointmentStatus getStatus() { return status; }
+    public void setStatus(AppointmentStatus status) { this.status = status; }
 }
