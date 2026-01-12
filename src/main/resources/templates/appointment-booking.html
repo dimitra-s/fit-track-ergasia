@@ -49,6 +49,19 @@
                             <div class="form-text text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
                         </div>
 
+                        <div class="mb-4">
+                            <label for="notesInput" class="form-label fw-bold">Σημειώσεις για τον Trainer</label>
+                            <textarea id="notesInput"
+                                      th:field="*{notes}"
+                                      class="form-control form-control-lg"
+                                      rows="3"
+                                      placeholder="Π.χ. στόχος, τραυματισμοί, τι να προσέξει ο trainer..."></textarea>
+                            <div class="form-text text-danger"
+                                 th:if="${#fields.hasErrors('notes')}"
+                                 th:errors="*{notes}"></div>
+                        </div>
+
+
                         <div th:if="${#fields.hasAnyErrors()}" class="alert alert-danger">
                             <ul>
                                 <li th:each="e : ${#fields.errors('*')}" th:text="${e}"></li>
