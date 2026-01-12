@@ -1,7 +1,9 @@
 package gr.hua.dit.fittrack.core.service.impl.dto;
 
+import gr.hua.dit.fittrack.core.model.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record RegisterUserRequest(
@@ -9,5 +11,9 @@ public record RegisterUserRequest(
         @NotBlank @Size(min = 4, max = 24) String password,
         @NotBlank String firstName,
         @NotBlank String lastName,
-        String fitnessGoal // Βεβαιώσου ότι αυτή η γραμμή υπάρχει!
+        String fitnessGoal,
+
+        @NotNull Role role,          // 👈 ΝΕΟ
+        String specialization,       // 👈 μόνο για trainer
+        String area                  // 👈 μόνο για trainer
 ) {}

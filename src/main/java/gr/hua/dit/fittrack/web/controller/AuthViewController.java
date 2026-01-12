@@ -1,5 +1,6 @@
 package gr.hua.dit.fittrack.web.controller;
 
+import gr.hua.dit.fittrack.core.model.entity.Role;
 import gr.hua.dit.fittrack.core.service.AuthService;
 import gr.hua.dit.fittrack.core.service.impl.dto.RegisterUserRequest;
 import jakarta.validation.Valid;
@@ -29,9 +30,21 @@ public class AuthViewController {
     // --- ΕΓΓΡΑΦΗ ΑΠΛΟΥ ΧΡΗΣΤΗ ---
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("registerRequest", new RegisterUserRequest("", "", "", "", ""));
+        model.addAttribute("registerRequest",
+                new RegisterUserRequest(
+                        "",     // email
+                        "",     // password
+                        "",     // firstName
+                        "",     // lastName
+                        "",     // fitnessGoal
+                        Role.USER,
+                        "",     // specialization
+                        ""      // area
+                )
+        );
         return "register";
     }
+
 
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("registerRequest") RegisterUserRequest request,

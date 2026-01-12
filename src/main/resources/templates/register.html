@@ -15,6 +15,12 @@
                 <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
                 <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+                    <label>Εγγραφή ως</label>
+                    <select th:field="*{role}" class="form-select" required>
+                        <option value="USER">USER</option>
+                        <option value="TRAINER">TRAINER</option>
+                    </select>
+
                     <div class="row mb-3">
                         <div class="col">
                             <label class="form-label">Όνομα</label>

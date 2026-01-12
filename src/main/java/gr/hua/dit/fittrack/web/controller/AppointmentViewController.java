@@ -103,62 +103,16 @@ public class AppointmentViewController {
         return "redirect:/appointments/my-appointments?success";
     }
 
-  //  @PostMapping("/new")
-//    public String processAppointment(
-//            @Valid @ModelAttribute("appointmentRequest") CreateAppointmentRequest request,
-//            BindingResult bindingResult,
-//            Model model,
-//            Authentication authentication
-//    ) {
-//
-//            if (bindingResult.hasErrors()) {
-//                System.out.println("BINDING ERRORS:");
-//                bindingResult.getFieldErrors().forEach(err ->
-//                        System.out.println(" - field=" + err.getField()
-//                                + " rejected=" + err.getRejectedValue()
-//                                + " msg=" + err.getDefaultMessage())
-//                );
-//
-//                model.addAttribute("trainers", trainerService.findAllTrainers());
-//                return "appointment-booking";
-//            }
-//
-//
-//
-//        String email = authentication.getName();
-//        Long userId = userRepository.findByEmailAddress(email)
-//                .orElseThrow(() -> new RuntimeException("User not found"))
-//                .getId();
-//
-//        CreateAppointmentRequest fixed = new CreateAppointmentRequest(
-//                userId,
-//                request.trainerId(),
-//                request.dateTime(),
-//                request.type(),
-//                request.notes()
-//        );
-//        System.out.println("SUBMIT appointment: trainerId=" + request.trainerId()
-//                + ", dateTime=" + request.dateTime()
-//                + ", type=" + request.type());
-//
-//        CreateAppointmentResult result = appointmentService.createAppointment(fixed, true);
-//
-//        System.out.println("RESULT created=" + result.created() + " reason=" + result.reason());
-//
-//
-//        if (!result.created()) {
-//            model.addAttribute("errorMessage", result.reason());
-//            model.addAttribute("trainers", trainerService.findAllTrainers());
-//            return "appointment-booking";
-//        }
-//
-//        return "redirect:/appointments/my-appointments?success";
-//    }
-
 
     // Η ΜΕΓΑΛΗ ΑΛΛΑΓΗ ΕΔΩ
     @GetMapping("/my-appointments")
     public String listAppointments(Authentication authentication, Model model) {
+
+        System.out.println("=== LOGIN CHECK ===");
+        System.out.println("USER EMAIL = " + authentication.getName());
+        authentication.getAuthorities()
+                .forEach(a -> System.out.println("ROLE = " + a.getAuthority()));
+        System.out.println("===================");
         String email = authentication.getName();
 
         // Ελέγχουμε αν ο χρήστης έχει ρόλο TRAINER

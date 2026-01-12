@@ -1,7 +1,9 @@
 package gr.hua.dit.fittrack.core.service.impl;
 
 import gr.hua.dit.fittrack.core.model.entity.Role;
+import gr.hua.dit.fittrack.core.model.entity.Trainer;
 import gr.hua.dit.fittrack.core.model.entity.User;
+import gr.hua.dit.fittrack.core.repository.TrainerRepository;
 import gr.hua.dit.fittrack.core.repository.UserRepository;
 import gr.hua.dit.fittrack.core.security.JwtService;
 import gr.hua.dit.fittrack.core.service.AuthService;
@@ -16,18 +18,41 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final TrainerRepository trainerRepository;
+
 
     public AuthServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
-                           JwtService jwtService) {
+                           JwtService jwtService,TrainerRepository trainerRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.trainerRepository = trainerRepository;
     }
 
     @Override
     @Transactional
     public void registerUser(RegisterUserRequest request) {
+
+        if (request.role() == Role.TRAINER) {
+
+            if (trainerRepository.findByEmail(request.email()).isPresent()) {
+                throw new RuntimeException("Trainer με αυτό το email υπάρχει ήδη.");
+            }
+
+            Trainer trainer = new Trainer();
+            trainer.setFirstName(request.firstName());
+            trainer.setLastName(request.lastName());
+            trainer.setEmail(request.email());
+            trainer.setPassword(passwordEncoder.encode(request.password()));
+            trainer.setSpecialization(request.specialization());
+            trainer.setArea(request.area());
+
+            trainerRepository.save(trainer);
+            return;
+        }
+
+        // ---------- USER ----------
         if (userRepository.findByEmailAddress(request.email()).isPresent()) {
             throw new RuntimeException("Το email χρησιμοποιείται ήδη.");
         }
@@ -43,6 +68,8 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
     }
+
+
 
     @Override
     public LoginResult login(LoginRequest request) {
